@@ -1,0 +1,15 @@
+<h1>to-dos</h1>
+<h2>entire list: <%= todos %></h2>
+
+
+<a href="/todos/new">make a new todo</a>
+
+<h2>list of items</h2>
+<ul>
+  <% todos.forEach(function(item, index) { %>
+      <li><%= item %></li>
+      <form action="/todos/<%= index %>" method="POST">
+        <input type="submit" value="x">
+      </form>
+  <% }) %>
+</ul>
