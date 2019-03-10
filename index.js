@@ -40,7 +40,12 @@ app.post('/todos', function(req, res) {
     }
 })
 
-app.get('/api/:name', function(req1,res1) {
+app.get('/register', function(req,res) {
+    res.render('register')
+})
+
+//a-e,e,p,ln,fn,c,co,po,pr,s
+app.post('/api', function(req1,res1) {
 
 var options = {
   'method': 'POST',
@@ -64,7 +69,7 @@ var req = https.request(options, function (res) {
     var body = Buffer.concat(chunks);
     bodyHt = body.toString();
     console.log(body.toString());
-res1.send(bodyHt + name);
+res1.send(bodyHt);
   });
 
   res.on("error", function (error) {
@@ -72,25 +77,25 @@ res1.send(bodyHt + name);
   });
 });
 
-var name = req1.params.name;
 
 var postData =  '{\n\t\"type\": \"account\",\n    \"data\": {\n    \t\"attributes\": {\n\t\t\t\"account-type\": \"individual\",\n\t\t\t\"admin-email\": \"${name}@example.com\",\n\t\t\t\"contact\": {\n\t\t\t   \"email\": \"patricia@example.com\",\n\t\t\t   \"phone\": \"555-555-5323\",\n\t\t\t   \"last-name\": \"Trie\",\n\t\t\t   \"first-name\": \"Patricia\",\n\t\t\t   \"address\": {\n\t\t   \t\t\t\"city\": \"Toronto\",\n\t\t             \"postal-code\": \"N4N2L1\",\n\t\t             \"province-region\": \"Ontario\",\n\t\t             \"street-address-1\": \"925 Madison Avenue\",\n\t\t             \"country\": \"CA\"\n\t\t\t   }\n\t   \t\t}\n\t\t}\n    }\n}';
 
 var obj = JSON.parse(postData);
 
-obj.data.attributes["admin-email"] = "smt@gmail.com";
-obj.data.attributes.contact["email"] = "smt@gmail.com";
-obj.data.attributes.contact["phone"] = "05996079066";
-obj.data.attributes.contact["last-name"] = "test";
-obj.data.attributes.contact["first-name"] = "test";
-obj.data.attributes.contact.address["city"] = "London";
-obj.data.attributes.contact.address["country"] = "UK";
-obj.data.attributes.contact.address["postal-code"] = "N88576";
-obj.data.attributes.contact.address["province-region"] = "Onta";
-obj.data.attributes.contact.address["street-address-1"] = "885 afdf";
+obj.data.attributes["admin-email"] = req1.body.ae
+obj.data.attributes.contact["email"] = req1.body.e
+obj.data.attributes.contact["phone"] = req1.body.p
+obj.data.attributes.contact["last-name"] = req1.body.ln
+obj.data.attributes.contact["first-name"] = req1.body.fn
+obj.data.attributes.contact.address["city"] = req1.body.c
+obj.data.attributes.contact.address["country"] = req1.body.co
+obj.data.attributes.contact.address["postal-code"] = req1.body.pc
+obj.data.attributes.contact.address["province-region"] = req1.body.r
+obj.data.attributes.contact.address["street-address-1"] = req1.body.sa
 
 
 console.log(obj.data.attributes["admin-email"]);
+console.log(req1.body.ae);
 
 
 req.write(JSON.stringify(obj));
