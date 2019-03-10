@@ -39,7 +39,7 @@ app.post('/todos', function(req, res) {
         res.redirect('/todos');
     }
 })
-
+//**********************************
 app.get('/register', function(req,res) {
     res.render('register')
 })
@@ -105,6 +105,109 @@ req.end();
 //res1.send(bodyHt);
 
    
+})
+
+app.get('/createfile', function(req,res) {
+    res.render('createfile')
+})
+
+app.post('/postfile', function(req1, res1) {
+var https = require('https');
+
+var options = {
+  'method': 'POST',
+  'hostname': 'api.todaqfinance.net',
+  'path': '/files',
+  'headers': {
+    'Content-Type': 'application/json',
+    'x-api-key': 'aeafa8a0-7596-44e3-8389-96e0b7fbeca9'
+  }
+};
+
+var req = https.request(options, function (res) {
+  var chunks = [];
+
+  res.on("data", function (chunk) {
+    chunks.push(chunk);
+  });
+
+  res.on("end", function (chunk) {
+    var body = Buffer.concat(chunks);
+    console.log(body.toString());
+    res1.send(body.toString());
+  });
+
+  res.on("error", function (error) {
+    console.error(error);
+  });
+});
+
+var postData =  "{\n    \"data\": {\n    \t\"type\":\"file\",\n    \t\"attributes\":{\n    \t\t\"payload\":{ \n    \t\t\t\"id\": \"1a3c1e04-ab62-4c44-b4a3-873f5d50c07d\",\n\t\t\t\t \"type\": \"loyalty-token\",\n\t\t\t\t \"member-type\": \"gold\"\n    \t\t}\n    \t},\n    \t\"relationships\":{\n    \t\t\"initial-account\":{\n    \t\t\t\"data\":{\n\t    \t\t\t\"type\":\"account\",\n    \t\t\t\t\"id\":\"86c566f6-00ea-4309-8c54-98727754bf85\"\n    \t\t\t}\n    \t\t},\n    \t\t\"file-type\": {\n    \t\t\t\"data\": {\n    \t\t\t\t\"id\": \"ddbb8d2fa80f5eeb2c9071026038557571d65db62ba1d32a974c7932dc4a5fa2\"\n    \t\t\t}\n    \t\t}\n    \t}\n    }\n}";
+
+var obj = JSON.parse(postData);
+
+obj.data.attributes.payload["id"] = "1a3c1e04-ab62-4c44-b4a3-873f5d50c07d"
+obj.data.attributes.payload["prescription"] = req1.body.pres;
+obj.data.relationships["initial-account"].data["id"] = req1.body.id;
+obj.data.relationships["file-type"].data["id"] = "ddbb8d2fa80f5eeb2c9071026038557571d65db62ba1d32a974c7932dc4a5fa2"
+
+//console.log(obj.data.attribute.payload["prescription"]);
+console.log(req1.body.pres);
+console.log(req1.body.id);
+
+
+req.write(JSON.stringify(obj));
+
+
+req.write(postData);
+
+
+req.end();
+})
+
+
+app.get('/viewfile', function(req,res) {
+    res.render('viewfile')
+})
+
+app.post('/getfile', function(req1, res1) {
+var https = require('https');
+
+var acc = "/accounts/" + req1.body.id + "/files?page=1&limit=100";
+
+var options = {
+  'method': 'GET',
+  'hostname': 'api.todaqfinance.net',
+  'path': "/accounts/" + req1.body.id + "/files?page=1&limit=100",
+  'headers': {
+    'Content-Type': 'application/json',
+    'x-api-key': 'aeafa8a0-7596-44e3-8389-96e0b7fbeca9'
+  }
+};
+
+var req = https.request(options, function (res) {
+  var chunks = [];
+
+  res.on("data", function (chunk) {
+    chunks.push(chunk);
+  });
+
+  res.on("end", function (chunk) {
+    var body = Buffer.concat(chunks);
+    console.log(body.toString());
+    res1.send(body.toString());
+  });
+
+  res.on("error", function (error) {
+    console.error(error);
+  });
+});
+
+console.log(req1.body.id);
+
+req.end();
+
+
 })
 
 app.post('/todos/:index', function(req, res) {
